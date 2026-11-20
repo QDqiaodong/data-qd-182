@@ -1,0 +1,56 @@
+{
+  "shafts": 2,
+  "tie_up": [
+    {
+      "id": "T1",
+      "shafts": [
+        1
+      ]
+    },
+    {
+      "id": "T2",
+      "shafts": [
+        2
+      ]
+    }
+  ],
+  "warp": [
+    {
+      "shaft": 1,
+      "yarn": "white"
+    },
+    {
+      "shaft": 2,
+      "yarn": "blue"
+    },
+    {
+      "shaft": 1,
+      "yarn": "white"
+    },
+    {
+      "shaft": 2,
+      "yarn": "blue"
+    }
+  ],
+  "picks": [
+    {
+      "treadles": [
+        "T1"
+      ],
+      "yarn": "white"
+    },
+    {
+      "treadles": [
+        "T2"
+      ],
+      "yarn": "white"
+    }
+  ],
+  "repeat_x": 2,
+  "repeat_y": 3,
+  "warp_spacing_mm": 2,
+  "pick_spacing_mm": 2,
+  "takeup_permille": 100,
+  "warp_waste_mm": 20,
+  "float_limit": 2
+}
