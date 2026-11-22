@@ -34,10 +34,18 @@ uv pip check --python .venv/bin/python
 
 预期：交付 A、S、B 共 9 纬，交付价值 2，总纱线 49mm（经 22mm、纬 27mm），库存恰好用尽。
 
+纱线批次追溯与历史放行复核（织造结束后按裁片核对原料批次与放行结论）：
+
+```sh
+.venv/bin/loom-trace --source fixtures/trace_input.json --output run/trace_report.json
+```
+
+预期（`as_of=8`，含 known_at=7 的归账订正）：三块裁片 S、R、U 均为 `released`，未归账 0mm。同目录 `fixtures/trace_recall.json` 把 `as_of` 收窄到 6：S、R 因 known_at=5 的独立不合格证书变为 `recall`（历史仍为当时已放行），U 仍 `released`。
+
 成功退出0；业务质量提示或诊断不等于输入失败，见summary。非法输入或已有目标退出2，保留旧目标。JSON最多8MB，拒绝重复键、未知字段及非有限常量。先完整验证与计算，再同目录临时文件原子硬链接新建一个JSON报告。run/已忽略。
 
 ## 数据契约和边界
 
-采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)。
+采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)。
 
 样例全部为原创合成数据，见[来源](fixtures/SOURCES.md)。代码和样例MIT许可；业务命令和测试不访问网络、不启动容器。功能边界以实际源码和契约为准。

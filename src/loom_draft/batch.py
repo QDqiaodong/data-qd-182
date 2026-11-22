@@ -5,23 +5,14 @@
 有限生产串的跨段经向浮线审查、整轴一次取整的材料汇总、共享库存检查，
 以及“交付价值最大、总用纱最小、身份键字典序最小”的全局精确搜索。
 """
-import re
 from collections import Counter
 from itertools import combinations
 
 from .io import fields, integer, rows, label
+from .identity import identifier
 from .model import tie_up_map, warp_ends, pick_rows, gauge_numbers
 from .weave import draw, circular_float
 from .materials import ceil_permille
-
-ID_PATTERN = re.compile(r"[A-Za-z0-9_-]{1,40}")
-
-
-def _identity(value, name):
-    if not isinstance(value, str) or not ID_PATTERN.fullmatch(value):
-        raise ValueError(f"{name} requires id matching [A-Za-z0-9_-]{{1,40}}")
-    return value
-
 
 def validate_batch(data):
     """严格验证批次输入；所有声明（含永不生产的工单/接缝）都必须合法。"""
@@ -36,7 +27,7 @@ def validate_batch(data):
     seen = set()
     for job in rows(data["jobs"], "jobs", 1, 6):
         fields(job, ("id", "value", "picks", "repeat_y", "phases"))
-        jid = _identity(job["id"], "job id")
+        jid = identifier(job["id"], "job id")
         if jid in seen:
             raise ValueError(f"duplicate job ID: {jid}")
         seen.add(jid)
@@ -54,7 +45,7 @@ def validate_batch(data):
     seen = set()
     for bridge in rows(data["bridges"], "bridges", 0, 2):
         fields(bridge, ("id", "picks"))
-        bid = _identity(bridge["id"], "bridge id")
+        bid = identifier(bridge["id"], "bridge id")
         if bid in seen:
             raise ValueError(f"duplicate bridge ID: {bid}")
         seen.add(bid)
@@ -90,7 +81,7 @@ def _column_stats(column):
     return all_ones, pre, suf, runs
 
 
-def _segment(tie_up, warp, picks, repeat_count):
+def compile_segment(tie_up, warp, picks, repeat_count):
     """编译一段（工单某相位旋转后的周期或一条接缝）为压缩描述，不展开 repeat_count。"""
     grid, lifts = draw(tie_up, warp, picks)
     n = len(picks)
@@ -119,7 +110,7 @@ def _weft_ok(segment, limit):
                for row in segment["weft_rows"])
 
 
-def _prepare(spec):
+def prepare_plan(spec):
     common = spec["common"]
     warp = spec["warp"]
     ends = len(warp)
@@ -131,7 +122,7 @@ def _prepare(spec):
     for j, job in enumerate(spec["jobs"]):
         for phase in job["phases"]:
             rotated = job["picks"][phase:] + job["picks"][:phase]
-            job_segs[(j, phase)] = _segment(spec["tie_up"], warp, rotated, job["repeat_y"])
+            job_segs[(j, phase)] = compile_segment(spec["tie_up"], warp, rotated, job["repeat_y"])
         first = job_segs[(j, job["phases"][0])]
         job_picks[j] = first["picks"]
         job_weft[j] = first["weft_counts"]
@@ -140,7 +131,7 @@ def _prepare(spec):
     bridge_segs = []
     usable_bridges = []
     for b, bridge in enumerate(spec["bridges"]):
-        segment = _segment(spec["tie_up"], warp, bridge["picks"], 1)
+        segment = compile_segment(spec["tie_up"], warp, bridge["picks"], 1)
         bridge_segs.append(segment)
         if _weft_ok(segment, limit):
             usable_bridges.append(b)
@@ -288,7 +279,7 @@ def _search_subset(spec, ctx, combo, yarn_bound):
     return best[0]
 
 
-def _search(spec, ctx):
+def search_plan(spec, ctx):
     """按交付价值降序逐层精确搜索；同价值层内取总用纱最小、再取身份键最小。"""
     jobs = spec["jobs"]
     by_value = {}
@@ -375,7 +366,7 @@ def _materials(spec, ctx, total_picks, weft_counts):
             "total_picks": total_picks, "yarn": yarn_rows, "stock_balance": balance}
 
 
-def _report(spec, ctx, best):
+def build_plan_report(spec, ctx, best):
     jobs = spec["jobs"]
     bridges = spec["bridges"]
     identity, segs = ([], []) if best is None else (best[1], best[2])
@@ -438,6 +429,27 @@ def _report(spec, ctx, best):
 def run_plan(data):
     """验证批次输入并返回全局最优的批次报告（普通字典）；非法输入抛 ValueError。"""
     spec = validate_batch(data)
-    ctx = _prepare(spec)
-    best = _search(spec, ctx)
-    return _report(spec, ctx, best)
+    ctx = prepare_plan(spec)
+    best = search_plan(spec, ctx)
+    return build_plan_report(spec, ctx, best)
+
+
+def production(spec):
+    """Re-derive the selected production string for trace consumers.
+
+    Returns ``(report, segments)`` where ``segments`` is the compressed sequence
+    of the unique plan chosen by run_plan's ordering rules.  No optimisation
+    objective is added here; the plan is exactly the one run_plan reports.
+    """
+    ctx = prepare_plan(spec)
+    best = search_plan(spec, ctx)
+    report = build_plan_report(spec, ctx, best)
+    segments = []
+    if best is not None:
+        entries = best[2]
+        for entry in entries:
+            if entry[0] == "b":
+                segments.append(ctx["bridge_segs"][entry[1]])
+            else:
+                segments.append(ctx["job_segs"][(entry[1], entry[2])])
+    return report, segments

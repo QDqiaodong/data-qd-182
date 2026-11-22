@@ -85,3 +85,70 @@ class BatchCliProcessTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TraceCliProcessTests(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        self.source = Path(self.dir.name) / "input.json"
+        self.output = Path(self.dir.name) / "report.json"
+
+    def write(self, data):
+        self.source.write_text(json.dumps(data))
+
+    def test_success_prints_summary_and_writes_report(self):
+        self.write(json.loads((FIXTURES / "trace_input.json").read_text()))
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads(result.stdout)
+        self.assertEqual(summary, {"shipments": 3, "released": 3, "recall": 0,
+                                   "ready": 0, "hold": 0,
+                                   "whole_unattributed_mm": 0})
+        report = json.loads(self.output.read_text())
+        self.assertEqual(report["schema_version"], 1)
+        self.assertEqual([s["id"] for s in report["shipments"]], ["R", "S", "U"])
+
+    def test_business_recall_still_exit_zero(self):
+        self.write(json.loads((FIXTURES / "trace_recall.json").read_text()))
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        summary = json.loads(result.stdout)
+        self.assertEqual(summary["recall"], 2)
+        self.assertEqual(summary["released"], 1)
+        report = json.loads(self.output.read_text())
+        self.assertEqual({s["id"]: s["disposition"] for s in report["shipments"]},
+                         {"S": "recall", "R": "recall", "U": "released"})
+
+    def test_existing_output_kept_byte_for_byte(self):
+        self.write(json.loads((FIXTURES / "trace_input.json").read_text()))
+        self.output.write_bytes(b"previous report\n")
+        before = self.output.read_bytes()
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(self.output.read_bytes(), before)
+        self.assertEqual(len(list(Path(self.dir.name).glob(".*"))), 0)
+
+    def test_invalid_input_leaves_no_report(self):
+        data = json.loads((FIXTURES / "trace_input.json").read_text())
+        data["allocations"][0]["payload"]["base_end"] = 9
+        self.write(data)
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertFalse(self.output.exists())
+        self.assertEqual(len(list(Path(self.dir.name).glob(".*"))), 0)
+
+    def test_duplicate_and_nonfinite_rejected(self):
+        self.source.write_text('{"batch": {}, "batch": {}, "lots": [], '
+                               '"allocations": [], "certificates": [], '
+                               '"shipments": [], "as_of": 0}')
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("duplicate", result.stderr)
+        self.assertFalse(self.output.exists())
+        text = (FIXTURES / "trace_input.json").read_text().replace('"as_of": 8', '"as_of": NaN')
+        self.source.write_text(text)
+        result = run_cli("loom_draft.trace_cli", self.source, self.output)
+        self.assertEqual(result.returncode, 2)
+        self.assertFalse(self.output.exists())
