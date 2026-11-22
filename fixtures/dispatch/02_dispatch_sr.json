@@ -1,0 +1,21 @@
+{
+  "op": "dispatch",
+  "request_id": "D1",
+  "expected_generation": 1,
+  "cuts": [
+    {
+      "cut_id": "S",
+      "end_start": 0,
+      "end_stop": 1,
+      "pick_start": 0,
+      "pick_stop": 2
+    },
+    {
+      "cut_id": "R",
+      "end_start": 1,
+      "end_stop": 2,
+      "pick_start": 0,
+      "pick_stop": 2
+    }
+  ]
+}

@@ -44,8 +44,20 @@ uv pip check --python .venv/bin/python
 
 成功退出0；业务质量提示或诊断不等于输入失败，见summary。非法输入或已有目标退出2，保留旧目标。JSON最多8MB，拒绝重复键、未知字段及非有限常量。先完整验证与计算，再同目录临时文件原子硬链接新建一个JSON报告。run/已忽略。
 
+实际裁片发货台账与召回交接（本地持久、多进程安全，不连外部系统）：
+
+```sh
+rm -rf run/dispatch_store
+for f in fixtures/dispatch/0*.json; do
+  .venv/bin/loom-dispatch --store run/dispatch_store --source "$f" >/dev/null
+done
+.venv/bin/loom-dispatch --store run/dispatch_store --view
+```
+
+预期：台账 generation=3，S、R 经历 recall 后恢复 normal，4 个事件（recall×2、clear×2）全部确认，重发同面积裁片被 `cloth_overlap` 永久拒绝。也可运行 `PYTHONPATH=src python3 examples/dispatch_walkthrough.py` 查看含回执的完整生命周期。业务拒绝退出0；输入错误、request_id 冲突、存储/I/O 错误退出2。字段、提交原子性、请求重放与召回交接规则详见[发货台账契约](docs/contract-dispatch.md)。
+
 ## 数据契约和边界
 
-采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)。
+采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)；实际裁片发货、占用防重、召回事件与请求重放详见[发货台账契约](docs/contract-dispatch.md)。
 
 样例全部为原创合成数据，见[来源](fixtures/SOURCES.md)。代码和样例MIT许可；业务命令和测试不访问网络、不启动容器。功能边界以实际源码和契约为准。

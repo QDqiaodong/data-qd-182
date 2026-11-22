@@ -1,0 +1,180 @@
+{
+  "op": "ingest",
+  "request_id": "ing-fail",
+  "expected_generation": 1,
+  "source": {
+    "batch": {
+      "common": {
+        "shafts": 2,
+        "tie_up": [
+          {
+            "id": "T1",
+            "shafts": [
+              1
+            ]
+          },
+          {
+            "id": "T2",
+            "shafts": [
+              2
+            ]
+          }
+        ],
+        "warp": [
+          {
+            "shaft": 1,
+            "yarn": "w"
+          },
+          {
+            "shaft": 2,
+            "yarn": "w"
+          }
+        ],
+        "repeat_x": 1,
+        "warp_spacing_mm": 1,
+        "pick_spacing_mm": 1,
+        "takeup_permille": 100,
+        "warp_waste_mm": 1,
+        "float_limit": 3
+      },
+      "jobs": [
+        {
+          "id": "A",
+          "value": 1,
+          "repeat_y": 1,
+          "phases": [
+            0
+          ],
+          "picks": [
+            {
+              "treadles": [
+                "T1"
+              ],
+              "yarn": "f"
+            },
+            {
+              "treadles": [
+                "T2"
+              ],
+              "yarn": "f"
+            },
+            {
+              "treadles": [
+                "T1"
+              ],
+              "yarn": "f"
+            },
+            {
+              "treadles": [
+                "T2"
+              ],
+              "yarn": "f"
+            }
+          ]
+        }
+      ],
+      "bridges": [],
+      "stock": [
+        {
+          "yarn": "w",
+          "length_mm": 1000000
+        },
+        {
+          "yarn": "f",
+          "length_mm": 1000000
+        }
+      ],
+      "max_length_mm": 1000000
+    },
+    "lots": [
+      {
+        "id": "W",
+        "yarn": "w",
+        "capacity_mm": 12
+      },
+      {
+        "id": "F",
+        "yarn": "f",
+        "capacity_mm": 12
+      }
+    ],
+    "allocations": [
+      {
+        "id": "aw0",
+        "revision": 1,
+        "known_at": 1,
+        "payload": {
+          "orientation": "warp",
+          "base_end": 0,
+          "repeat_start": 0,
+          "repeat_stop": 1,
+          "pick_start": 0,
+          "pick_stop": 4,
+          "lot_id": "W"
+        }
+      },
+      {
+        "id": "aw1",
+        "revision": 1,
+        "known_at": 1,
+        "payload": {
+          "orientation": "warp",
+          "base_end": 1,
+          "repeat_start": 0,
+          "repeat_stop": 1,
+          "pick_start": 0,
+          "pick_stop": 4,
+          "lot_id": "W"
+        }
+      },
+      {
+        "id": "wf",
+        "revision": 1,
+        "known_at": 1,
+        "payload": {
+          "orientation": "weft",
+          "pick_start": 0,
+          "pick_stop": 4,
+          "lot_id": "F"
+        }
+      }
+    ],
+    "certificates": [
+      {
+        "id": "cw",
+        "revision": 1,
+        "known_at": 1,
+        "payload": {
+          "lot_id": "W",
+          "pick_start": 0,
+          "pick_stop": 4,
+          "verdict": "pass"
+        }
+      },
+      {
+        "id": "cf",
+        "revision": 1,
+        "known_at": 1,
+        "payload": {
+          "lot_id": "F",
+          "pick_start": 0,
+          "pick_stop": 4,
+          "verdict": "pass"
+        }
+      },
+      {
+        "id": "ff",
+        "revision": 1,
+        "known_at": 5,
+        "payload": {
+          "lot_id": "F",
+          "pick_start": 1,
+          "pick_stop": 2,
+          "verdict": "fail"
+        }
+      }
+    ],
+    "shipments": [],
+    "as_of": 6
+  }
+}

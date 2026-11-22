@@ -1,0 +1,10 @@
+{
+  "op": "ack",
+  "request_id": "ack-all",
+  "event_ids": [
+    1,
+    2,
+    3,
+    4
+  ]
+}

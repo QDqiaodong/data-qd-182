@@ -12,6 +12,7 @@ dependencies = []
 loom-draft = "loom_draft.cli:main"
 loom-batch = "loom_draft.batch_cli:main"
 loom-trace = "loom_draft.trace_cli:main"
+loom-dispatch = "loom_draft.dispatch_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
