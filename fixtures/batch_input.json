@@ -1,0 +1,125 @@
+{
+  "common": {
+    "shafts": 2,
+    "tie_up": [
+      {
+        "id": "T1",
+        "shafts": [
+          1
+        ]
+      },
+      {
+        "id": "T2",
+        "shafts": [
+          2
+        ]
+      }
+    ],
+    "warp": [
+      {
+        "shaft": 1,
+        "yarn": "w"
+      },
+      {
+        "shaft": 2,
+        "yarn": "w"
+      }
+    ],
+    "repeat_x": 1,
+    "warp_spacing_mm": 1,
+    "pick_spacing_mm": 1,
+    "takeup_permille": 100,
+    "warp_waste_mm": 1,
+    "float_limit": 3
+  },
+  "jobs": [
+    {
+      "id": "A",
+      "value": 1,
+      "picks": [
+        {
+          "treadles": [
+            "T2"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T2"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T1"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T1"
+          ],
+          "yarn": "w"
+        }
+      ],
+      "repeat_y": 1,
+      "phases": [
+        0
+      ]
+    },
+    {
+      "id": "B",
+      "value": 1,
+      "picks": [
+        {
+          "treadles": [
+            "T1"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T1"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T2"
+          ],
+          "yarn": "w"
+        },
+        {
+          "treadles": [
+            "T2"
+          ],
+          "yarn": "w"
+        }
+      ],
+      "repeat_y": 1,
+      "phases": [
+        0
+      ]
+    }
+  ],
+  "bridges": [
+    {
+      "id": "S",
+      "picks": [
+        {
+          "treadles": [
+            "T2"
+          ],
+          "yarn": "w"
+        }
+      ]
+    }
+  ],
+  "stock": [
+    {
+      "yarn": "w",
+      "length_mm": 49
+    }
+  ],
+  "max_length_mm": 9
+}
