@@ -1,0 +1,164 @@
+{
+  "batch": {
+    "common": {
+      "shafts": 2,
+      "tie_up": [
+        {
+          "id": "T1",
+          "shafts": [
+            1
+          ]
+        },
+        {
+          "id": "T2",
+          "shafts": [
+            2
+          ]
+        }
+      ],
+      "warp": [
+        {
+          "shaft": 1,
+          "yarn": "w"
+        },
+        {
+          "shaft": 2,
+          "yarn": "w"
+        }
+      ],
+      "repeat_x": 1,
+      "warp_spacing_mm": 1,
+      "pick_spacing_mm": 1,
+      "takeup_permille": 0,
+      "warp_waste_mm": 0,
+      "float_limit": 3
+    },
+    "jobs": [
+      {
+        "id": "A",
+        "value": 1,
+        "repeat_y": 1,
+        "phases": [
+          0
+        ],
+        "picks": [
+          {
+            "treadles": [
+              "T1"
+            ],
+            "yarn": "w"
+          },
+          {
+            "treadles": [
+              "T2"
+            ],
+            "yarn": "w"
+          },
+          {
+            "treadles": [
+              "T1"
+            ],
+            "yarn": "w"
+          },
+          {
+            "treadles": [
+              "T2"
+            ],
+            "yarn": "w"
+          },
+          {
+            "treadles": [
+              "T1"
+            ],
+            "yarn": "w"
+          }
+        ]
+      }
+    ],
+    "bridges": [],
+    "stock": [
+      {
+        "yarn": "w",
+        "length_mm": 100
+      }
+    ],
+    "max_length_mm": 100
+  },
+  "probe_ends": [
+    0
+  ],
+  "frames": [
+    [
+      0,
+      0,
+      0,
+      0,
+      "1",
+      null
+    ],
+    [
+      1,
+      2,
+      1,
+      2,
+      "?",
+      [
+        0,
+        1
+      ]
+    ],
+    [
+      2,
+      3,
+      1,
+      1,
+      "?",
+      null
+    ],
+    [
+      4,
+      4,
+      1,
+      2,
+      "1",
+      null
+    ]
+  ],
+  "cuts": [
+    {
+      "id": "L13",
+      "end_start": 0,
+      "end_stop": 1,
+      "pick_start": 1,
+      "pick_stop": 3
+    },
+    {
+      "id": "L2",
+      "end_start": 0,
+      "end_stop": 1,
+      "pick_start": 2,
+      "pick_stop": 3
+    },
+    {
+      "id": "L3",
+      "end_start": 0,
+      "end_stop": 1,
+      "pick_start": 3,
+      "pick_stop": 4
+    },
+    {
+      "id": "L4",
+      "end_start": 0,
+      "end_stop": 1,
+      "pick_start": 4,
+      "pick_stop": 5
+    },
+    {
+      "id": "R2",
+      "end_start": 1,
+      "end_stop": 2,
+      "pick_start": 2,
+      "pick_stop": 3
+    }
+  ]
+}

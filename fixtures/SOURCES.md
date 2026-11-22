@@ -1,1 +1,1 @@
-本目录为本项目原创合成样例（input.json 为 v1 单组织样例，batch_input.json 为多工单共用经轴批次样例，trace_input.json 为追溯主样例，trace_recall.json 为同数据收窄 as_of 的召回样例；dispatch/ 为发货台账按序演示 init、dispatch、ingest 召回、cloth_overlap 拒绝、撤回恢复与 ack 的严格命令文件），数据与代码采用MIT许可。不是观测/生产/个人真实数据，不需网络或外部服务。
+本目录为本项目原创合成样例（input.json 为 v1 单组织样例，batch_input.json 为多工单共用经轴批次样例，trace_input.json 为追溯主样例，trace_recall.json 为同数据收窄 as_of 的召回样例；dispatch/ 为发货台账按序演示 init、dispatch、ingest 召回、cloth_overlap 拒绝、撤回恢复与 ack 的严格命令文件；inspect_input.json 为验布机读数对齐关键对照样例），数据与代码采用MIT许可。不是观测/生产/个人真实数据，不需网络或外部服务。
