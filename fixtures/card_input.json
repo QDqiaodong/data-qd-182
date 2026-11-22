@@ -1,0 +1,96 @@
+{
+  "shafts": 2,
+  "warp": [
+    {
+      "shaft": 1,
+      "yarn": "warp-a"
+    },
+    {
+      "shaft": 2,
+      "yarn": "warp-b"
+    }
+  ],
+  "pedals": [
+    {
+      "id": "A",
+      "current": [
+        1
+      ],
+      "options": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "id": "B",
+      "current": [
+        1,
+        2
+      ],
+      "options": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "id": "C",
+      "current": [
+        2
+      ],
+      "options": [
+        [
+          2
+        ]
+      ]
+    },
+    {
+      "id": "E",
+      "current": [
+        1
+      ],
+      "options": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "id": "F",
+      "current": [
+        2
+      ],
+      "options": [
+        [
+          2
+        ]
+      ]
+    }
+  ],
+  "max_pressed": 2,
+  "blocked_pairs": [
+    [
+      "E",
+      "F"
+    ]
+  ],
+  "patterns": [
+    {
+      "id": "P",
+      "rows": [
+        "10",
+        "11",
+        "01"
+      ],
+      "faults": [
+        [
+          1,
+          "B"
+        ]
+      ]
+    }
+  ],
+  "rejoin_limit": 1
+}

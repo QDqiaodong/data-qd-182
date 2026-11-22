@@ -14,6 +14,7 @@ loom-batch = "loom_draft.batch_cli:main"
 loom-trace = "loom_draft.trace_cli:main"
 loom-dispatch = "loom_draft.dispatch_cli:main"
 loom-inspect = "loom_draft.inspect_cli:main"
+loom-card = "loom_draft.card_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

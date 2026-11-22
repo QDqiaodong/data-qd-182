@@ -57,7 +57,6 @@ done
 预期：台账 generation=3，S、R 经历 recall 后恢复 normal，4 个事件（recall×2、clear×2）全部确认，重发同面积裁片被 `cloth_overlap` 永久拒绝。也可运行 `PYTHONPATH=src python3 examples/dispatch_walkthrough.py` 查看含回执的完整生命周期。业务拒绝退出0；输入错误、request_id 冲突、存储/I/O 错误退出2。字段、提交原子性、请求重放与召回交接规则详见[发货台账契约](docs/contract-dispatch.md)。
 
 验布机读数对齐与复验清单（编码器回跳/掉帧下，在全部完整对齐路线上保守判定裁区 clear/recheck/damaged）：
-
 ```sh
 .venv/bin/loom-inspect --source fixtures/inspect_input.json --output run/inspect_report.json
 ```
@@ -71,8 +70,16 @@ python3 examples/inspection_acceptance.py run/big_input.json
 
 预期 summary：`{"clear": 1, "cuts": 2, "damaged": 0, "recheck": 1}`。对齐语义、裁区判定与资源约束详见[验布契约](docs/contract-inspect.md)。
 
+共用绑综的连续织造工艺卡（一套绑综覆盖多款，附带各款常态踩法与单拍故障应急踩法）：
+
+```sh
+.venv/bin/loom-card --source fixtures/card_input.json --output run/card_report.json
+```
+
+预期：`status=ready`，`changed_pedals=0`；款 P 常态 `[["A"],["B"],["C"]]`，B 在 1 纬失灵时应急 `[["C","E"],["F"]]`、`resume_row=0`。`rejoin_limit` 改为 0 时常态变为 `[["A"],["B"],["F"]]`、应急收为 `[["C","E"]]`；删去踏板 F 与含 F 的禁配对则该款 infeasible，但在无故障要求时同一缩减机台仍可正常织。选卡规则、输入限制与报告结构详见[工艺卡契约](docs/contract-card.md)。
+
 ## 数据契约和边界
 
-采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)；实际裁片发货、占用防重、召回事件与请求重放详见[发货台账契约](docs/contract-dispatch.md)；验布机帧对齐、全部完整路线上的覆盖/缺陷判定与复验清单详见[验布契约](docs/contract-inspect.md)。
+采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)；实际裁片发货、占用防重、召回事件与请求重放详见[发货台账契约](docs/contract-dispatch.md)；验布机帧对齐、全部完整路线上的覆盖/缺陷判定与复验清单详见[验布契约](docs/contract-inspect.md)；共用绑综的整体绑综选择、各款常态表与单拍故障应急踩法详见[工艺卡契约](docs/contract-card.md)。
 
 样例全部为原创合成数据，见[来源](fixtures/SOURCES.md)。代码和样例MIT许可；业务命令和测试不访问网络、不启动容器。功能边界以实际源码和契约为准。
