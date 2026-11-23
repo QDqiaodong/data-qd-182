@@ -78,8 +78,16 @@ python3 examples/inspection_acceptance.py run/big_input.json
 
 预期：`status=ready`，`changed_pedals=0`；款 P 常态 `[["A"],["B"],["C"]]`，B 在 1 纬失灵时应急 `[["C","E"],["F"]]`、`resume_row=0`。`rejoin_limit` 改为 0 时常态变为 `[["A"],["B"],["F"]]`、应急收为 `[["C","E"]]`；删去踏板 F 与含 F 的禁配对则该款 infeasible，但在无故障要求时同一缩减机台仍可正常织。选卡规则、输入限制与报告结构详见[工艺卡契约](docs/contract-card.md)。
 
+拆纬重织后的耗纱交班单（按纱筒对实物余量，废耗记在拆纬班次并注明原织入班次，给出续织边界）：
+
+```sh
+.venv/bin/loom-handoff --source fixtures/handoff_shift1.json --output run/handoff_1.json
+```
+
+预期：首班挂 F1、G1 织 3 纬签封 1 纬，`sealed=1`、`next_pick=3`，可续织 1 纬到卷尾。把报告中的 `checkpoint` 对象和固定 batch/spools 交给下一班即可续接：`PYTHONPATH=src python3 examples/handoff_walkthrough.py` 演示三班链（二班拆 2 纬，废耗记在原织入班次 1 的 F1、G1 各 3mm，续织在纬 2 因 F1 余量为零停下；三班改挂 F2 织完签封），以及纬 2 改由 F2 织入的归属变体。合法交班单（含续织耗尽或停在尾窗的提示）退出 0；输入、不自洽实织记录、坏 checkpoint 或 I/O 错误退出 2。坐标、事件、checkpoint 格式与尺寸上界详见[交班契约](docs/contract-handoff.md)。
+
 ## 数据契约和边界
 
-采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)；实际裁片发货、占用防重、召回事件与请求重放详见[发货台账契约](docs/contract-dispatch.md)；验布机帧对齐、全部完整路线上的覆盖/缺陷判定与复验清单详见[验布契约](docs/contract-inspect.md)；共用绑综的整体绑综选择、各款常态表与单拍故障应急踩法详见[工艺卡契约](docs/contract-card.md)。
+采用明确升综/格距模型；无限平铺风险审查与有限生产用量分别列明，不通信真实织机。 字段、单位、顺序及失败约定详见[契约](docs/contract.md)；多工单批次计划的输入、可行性与最优性规则、压缩报告结构详见[批次契约](docs/contract-batch.md)；纱线批次追溯、版本化时间快照与历史放行/召回规则详见[追溯契约](docs/contract-trace.md)；实际裁片发货、占用防重、召回事件与请求重放详见[发货台账契约](docs/contract-dispatch.md)；验布机帧对齐、全部完整路线上的覆盖/缺陷判定与复验清单详见[验布契约](docs/contract-inspect.md)；共用绑综的整体绑综选择、各款常态表与单拍故障应急踩法详见[工艺卡契约](docs/contract-card.md)；实织拆纬的纱筒实物余量、废耗归属、续织边界与多班交接详见[交班契约](docs/contract-handoff.md)。
 
 样例全部为原创合成数据，见[来源](fixtures/SOURCES.md)。代码和样例MIT许可；业务命令和测试不访问网络、不启动容器。功能边界以实际源码和契约为准。

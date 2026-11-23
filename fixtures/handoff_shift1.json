@@ -1,0 +1,57 @@
+{
+  "batch": {
+    "common": {
+      "shafts": 2,
+      "tie_up": [
+        {"id": "T1", "shafts": [1]},
+        {"id": "T2", "shafts": [2]}
+      ],
+      "warp": [
+        {"shaft": 1, "yarn": "W"},
+        {"shaft": 2, "yarn": "W"}
+      ],
+      "repeat_x": 1,
+      "warp_spacing_mm": 1,
+      "pick_spacing_mm": 1,
+      "takeup_permille": 100,
+      "warp_waste_mm": 0,
+      "float_limit": 1
+    },
+    "jobs": [
+      {
+        "id": "J",
+        "value": 1,
+        "picks": [
+          {"treadles": ["T1"], "yarn": "F"},
+          {"treadles": ["T2"], "yarn": "G"},
+          {"treadles": ["T1"], "yarn": "F"},
+          {"treadles": ["T2"], "yarn": "G"}
+        ],
+        "repeat_y": 1,
+        "phases": [0]
+      }
+    ],
+    "bridges": [],
+    "stock": [
+      {"yarn": "W", "length_mm": 10},
+      {"yarn": "F", "length_mm": 6},
+      {"yarn": "G", "length_mm": 6}
+    ],
+    "max_length_mm": 4
+  },
+  "spools": [
+    {"id": "F1", "yarn": "F", "length_mm": 6},
+    {"id": "F2", "yarn": "F", "length_mm": 6},
+    {"id": "G1", "yarn": "G", "length_mm": 9}
+  ],
+  "checkpoint": null,
+  "shift": {
+    "no": 1,
+    "events": [
+      {"op": "mount", "spool_id": "F1"},
+      {"op": "mount", "spool_id": "G1"},
+      {"op": "weave", "count": 3},
+      {"op": "seal", "count": 1}
+    ]
+  }
+}
